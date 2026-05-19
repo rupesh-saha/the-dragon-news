@@ -1,27 +1,48 @@
 'use client'
+import { authClient } from '@/lib/auth-client';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 
 const loginPage = () => {
-  const {register, handleSubmit, formState: { errors }} = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const handleLogin = (data) => {
+  const handleLogin = async(data) => {
     console.log(data);
+    const { email, password } = data;
+
+    const { data: res, error } = await authClient.signIn.email({
+
+      email: email, // required
+      password: password, // required
+      rememberMe: true,
+      callbackURL: "/",
+
+    })
+
+    console.log(error);
+
+    if(error) {
+        alert(error.message);
+    }
+    
+    if(res) {
+        alert("Log In successful");
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#F3F3F3] flex items-center justify-center p-4 select-none">
-      
-      
+
+
       <div className="w-full max-w-2xl bg-white rounded-md p-8 md:p-10 shadow-sm">
-        
+
         <h2 className="text-3xl md:text-4xl font-bold text-center text-[#403F3F] mb-6 tracking-tight">
           Login your account
         </h2>
 
 
         <form className="space-y-6" onSubmit={handleSubmit(handleLogin)}>
-          
+
           <div className="flex flex-col gap-2.5">
             <label className="text-base font-bold text-[#403F3F] tracking-wide">
               Email address
@@ -72,8 +93,8 @@ const loginPage = () => {
         {/* Bottom Context Footer Anchor */}
         <p className="text-center text-sm font-semibold text-neutral-500 mt-8 tracking-wide">
           Don’t Have An Account ?{' '}
-          <Link 
-            href="/register" 
+          <Link
+            href="/register"
             className="text-[#E21B1B] hover:underline font-bold transition-all ml-1"
           >
             Register

@@ -1,19 +1,42 @@
 'use client'
+import { authClient } from '@/lib/auth-client';
 import { useForm } from 'react-hook-form';
 
 const SignUpPage = () => {
-  const {register, handleSubmit, formState: { errors }} = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const handleLogin = (data) => {
+  const handleLogin = async (data) => {
     console.log(data);
+    const { name, url, email, password } = data;
+
+    const { data:res, error } = await authClient.signUp.email({
+
+      name: name, // required
+      email: email, // required
+      password: password, // required
+      image: url,
+      callbackURL: "/login",
+
+    })
+
+    console.log(error);
+
+    if(error) {
+        alert(error.message);
+    }
+    
+    if(res) {
+        alert("SignUp successful");
+    }
+
   };
 
   return (
     <div className="min-h-screen bg-[#F3F3F3] flex items-center justify-center p-4 select-none">
-      
-      
+
+
       <div className="w-full max-w-2xl bg-white rounded-md p-8 md:p-10 shadow-sm">
-        
+
         <h2 className="text-3xl md:text-4xl font-bold text-center text-[#403F3F] mb-6 tracking-tight">
           Register your account
         </h2>
@@ -54,7 +77,7 @@ const SignUpPage = () => {
               )
             }
           </div>
-          
+
           <div className="flex flex-col gap-2.5">
             <label className="text-base font-bold text-[#403F3F] tracking-wide">
               Email address
@@ -96,7 +119,7 @@ const SignUpPage = () => {
               type="submit"
               className="w-full bg-[#403F3F] hover:bg-neutral-800 text-white font-semibold text-base py-3.5 rounded-md transition-colors duration-150 cursor-pointer"
             >
-              Login
+              Register
             </button>
           </div>
 
